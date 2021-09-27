@@ -15,12 +15,18 @@ namespace StarWarsSpaceShipManager
         public Form1()
         {
             InitializeComponent();
-            ConnectionDB c = new ConnectionDB();
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SyncData sc = new SyncData();
+            sc.syncronize();
         }
     }
 }
