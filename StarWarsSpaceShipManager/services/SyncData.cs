@@ -21,7 +21,8 @@ namespace StarWarsSpaceShipManager
         public Task syncronize()
         {
 
-            return syncPlanets();
+            syncPlanets();
+            return syncSpaceShips();
         }
 
         private async Task syncPlanets()
@@ -53,6 +54,9 @@ namespace StarWarsSpaceShipManager
             
             //instancia a classe responsável por armazenar os dados no banco
             InsertPlanets op = new InsertPlanets(pns);
+
+
+            System.Diagnostics.Debug.WriteLine(op.getMessage());
             
         }
 
@@ -68,6 +72,21 @@ namespace StarWarsSpaceShipManager
 
 
 
+            //Formatação para se adaptar ao banco
+            for(int i = 0; i < ships.Results.Count; i++)
+            {
+                if(ships.Results[i].Passengers== "n/a")
+                {
+                    ships.Results[i].Passengers = "0";
+                }
+                if(ships.Results[i].Passengers== "843,342"){
+                    ships.Results[i].Passengers = 843342.ToString();
+                }
+            }
+
+            InsertSpaceShips op = new InsertSpaceShips(ships);
+
+            System.Diagnostics.Debug.WriteLine(op.getMessage());
 
            
         }

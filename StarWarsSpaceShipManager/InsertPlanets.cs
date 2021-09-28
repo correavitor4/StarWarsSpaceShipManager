@@ -45,7 +45,7 @@ namespace StarWarsSpaceShipManager
 
                 conn.disconnect();
 
-                this.message = "Inserção de naves no banco executada com sucesso!";
+                this.message = "Inserção de planetas no banco executada com sucesso!";
             }
             catch(Exception e)
             {
@@ -55,7 +55,7 @@ namespace StarWarsSpaceShipManager
 
         }
 
-        private string getMessage()
+        public string getMessage()
         {
             return this.message;
         }

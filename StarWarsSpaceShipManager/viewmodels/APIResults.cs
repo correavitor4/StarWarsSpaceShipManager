@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace StarWarsSpaceShipManager.viewmodels
 {
-    public class APIResults
+    public class APIResults<ViewModel>
     {
        
-        public List<viewmodels.PlanetViewModel> Results { set; get; }
+        public List<ViewModel> Results { set; get; }
+        
     }
 }
