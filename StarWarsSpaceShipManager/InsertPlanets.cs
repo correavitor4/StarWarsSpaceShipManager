@@ -9,7 +9,7 @@ namespace StarWarsSpaceShipManager
     {
         ConnectionDB conn = new ConnectionDB();
         SqlCommand cmd = new SqlCommand();
-        public InsertPlanets(viewmodels.APIResults planets)
+        public InsertPlanets(viewmodels.APIResults<viewmodels.PlanetViewModel> planets)
         {
             
 
@@ -23,11 +23,14 @@ namespace StarWarsSpaceShipManager
                 {
 
 
-                    System.Diagnostics.Debug.WriteLine(planets.Results[i].Population);
+                    
 
                     textComando += string.Format("('{0}','{1}','{2}','{3}','{4}','{5}')",
                         planets.Results[i].Name, planets.Results[i].Rotation_Period, planets.Results[i].Orbital_Period,
                         planets.Results[i].Diameter, planets.Results[i].Climate,planets.Results[i].Population);
+                    
+                    
+                    //Apenas a formatação de separar os valores a serem inseridos por vírgula
                     if (i != planets.Results.Count - 1)
                     {
                         textComando += ",";
