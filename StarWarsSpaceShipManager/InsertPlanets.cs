@@ -9,6 +9,8 @@ namespace StarWarsSpaceShipManager
     {
         ConnectionDB conn = new ConnectionDB();
         SqlCommand cmd = new SqlCommand();
+
+        private string message = "";
         public InsertPlanets(viewmodels.APIResults<viewmodels.PlanetViewModel> planets)
         {
             
@@ -42,6 +44,8 @@ namespace StarWarsSpaceShipManager
                 cmd.ExecuteNonQuery();
 
                 conn.disconnect();
+
+                this.message = "Inserção de naves no banco executada com sucesso!";
             }
             catch(Exception e)
             {
@@ -49,6 +53,11 @@ namespace StarWarsSpaceShipManager
             }
 
 
+        }
+
+        private string getMessage()
+        {
+            return this.message;
         }
     }
 }
