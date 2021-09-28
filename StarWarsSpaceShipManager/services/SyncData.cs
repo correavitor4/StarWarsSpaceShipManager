@@ -22,7 +22,16 @@ namespace StarWarsSpaceShipManager
         {
 
             syncPlanets();
+            syncPilots();
             return syncSpaceShips();
+        }
+
+        private async Task syncPilots()
+        {
+            System.Diagnostics.Debug.WriteLine("Iniciada a sincronização dos pilotos");
+            HttpClient client = new HttpClient();
+            string response = await client.GetStringAsync(URL_PILOTOS);
+
         }
 
         private async Task syncPlanets()
