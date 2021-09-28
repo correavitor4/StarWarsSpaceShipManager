@@ -13,7 +13,7 @@ namespace StarWarsSpaceShipManager
         //Método construtor
         public ConnectionDB()
         {
-            connection.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;";
+            connection.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=EstrelaDaMorte;Trusted_Connection=True;";
         }
 
 
