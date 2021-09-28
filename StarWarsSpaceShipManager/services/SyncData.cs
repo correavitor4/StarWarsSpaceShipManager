@@ -27,14 +27,22 @@ namespace StarWarsSpaceShipManager
         private async Task syncPlanets()
         {
             System.Diagnostics.Debug.WriteLine("Iniciada a sincronização dos planetas");
+
+            //Instância
             HttpClient client = new HttpClient();
 
+            //resposta do server
             string response = await client.GetStringAsync(URL_PLANETAS);
 
 
-            viewmodels.APIResults pns = new viewmodels.APIResults();
-            pns = JsonConvert.DeserializeObject<viewmodels.APIResults>(response);
+            //criar objeto APIResults
+            viewmodels.APIResults<viewmodels.PlanetViewModel> pns = new viewmodels.APIResults<viewmodels.PlanetViewModel>();
 
+            //Desserializa o JSON e o envia para esse lugar
+            pns = JsonConvert.DeserializeObject<viewmodels.APIResults<viewmodels.PlanetViewModel>>(response);
+
+
+            //Alguns planetas estavam com população "unknown", então mudei para 0, quando isso ocorre. Isto evita erros de inserção no banco de dados
             for(int i = 0; i < pns.Results.Count; i++)
             {
                 if (pns.Results[i].Population == "unknown")
@@ -43,15 +51,26 @@ namespace StarWarsSpaceShipManager
                 }
             }
             
+            //instancia a classe responsável por armazenar os dados no banco
             InsertPlanets op = new InsertPlanets(pns);
             
         }
 
-        /*private string formatPlanetsJsonString(string response)
+        private async Task syncSpaceShips()
         {
-            int initIndex = response.IndexOf(":[")+2;
-            int lengthForMethod = response.Length - initIndex -2;
-            return ("["+response.Substring(initIndex,lengthForMethod)+"]");
-        }*/
+            System.Diagnostics.Debug.WriteLine("Iniciada a sincronização das naves");
+            HttpClient client = new HttpClient();
+            string response = await client.GetStringAsync(URL_NAVES);
+
+            viewmodels.APIResults<viewmodels.SpaceShipViewModel> spaceShips = new viewmodels.APIResults<viewmodels.SpaceShipViewModel>();
+
+            var ships = JsonConvert.DeserializeObject<viewmodels.APIResults<viewmodels.SpaceShipViewModel>>(response);
+
+
+
+
+           
+        }
+        
     }
 }
