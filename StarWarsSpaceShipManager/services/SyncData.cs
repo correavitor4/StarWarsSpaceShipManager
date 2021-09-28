@@ -31,48 +31,27 @@ namespace StarWarsSpaceShipManager
 
             string response = await client.GetStringAsync(URL_PLANETAS);
 
-            //response = formatPlanetsJsonString(response);
-
-            System.Diagnostics.Debug.WriteLine(response);
 
             viewmodels.APIResults pns = new viewmodels.APIResults();
             pns = JsonConvert.DeserializeObject<viewmodels.APIResults>(response);
 
-            System.Diagnostics.Debug.WriteLine(pns.Results[0].Name);
-
-            /*
-
-            viewmodels.APIResults<viewmodels.PlanetViewModel> apir = new viewmodels.APIResults<viewmodels.PlanetViewModel>();
-
+            for(int i = 0; i < pns.Results.Count; i++)
+            {
+                if (pns.Results[i].Population == "unknown")
+                {
+                    pns.Results[i].Population = 0.ToString();
+                }
+            }
             
-            string response = await client.GetStringAsync(URL_PLANETAS) ;
+            InsertPlanets op = new InsertPlanets(pns);
             
-
-            apir = JsonConvert.DeserializeObject<viewmodels.APIResults<viewmodels.PlanetViewModel>>(response);
-            
-
-            System.Diagnostics.Debug.WriteLine(apir.Results);
-
-            this.planets.Add(planets);
-            System.Diagnostics.Debug.WriteLine("Concluída a sincronização dos planetas");
-            System.Diagnostics.Debug.WriteLine(planets[0].Name);
-            */
-
-            
-
-            
-            
-
-
-            
-           
         }
 
-        private string formatPlanetsJsonString(string response)
+        /*private string formatPlanetsJsonString(string response)
         {
             int initIndex = response.IndexOf(":[")+2;
             int lengthForMethod = response.Length - initIndex -2;
             return ("["+response.Substring(initIndex,lengthForMethod)+"]");
-        }
+        }*/
     }
 }
