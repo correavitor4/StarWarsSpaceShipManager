@@ -16,12 +16,12 @@ namespace StarWarsSpaceShipManager
             {
                 cmd.Connection = conn.connect();
                 string textComando = "INSERT INTO [dbo].[Naves] " +
-                    "([Nome],[Modelo],[Passageiros],[Carga],[Classe]) VALUES ";
+                    "([Nome],[Modelo],[Passageiros],[Carga],[Classe],[Url]) VALUES ";
 
                 for(int i = 0; i < ships.Results.Count; i++)
                 {
-                    textComando += string.Format("('{0}','{1}','{2}','{3}','{4}')",
-                        ships.Results[i].Name, ships.Results[i].Model, ships.Results[i].Passengers, ships.Results[i].Cargo_Capacity, ships.Results[i].Starship_Class);
+                    textComando += string.Format("('{0}','{1}','{2}','{3}','{4}','{5}')",
+                        ships.Results[i].Name, ships.Results[i].Model, ships.Results[i].Passengers, ships.Results[i].Cargo_Capacity, ships.Results[i].Starship_Class, ships.Results[i].Url);
                 
                     if(i != ships.Results.Count - 1)
                     {
