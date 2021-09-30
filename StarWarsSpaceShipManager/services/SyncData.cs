@@ -22,16 +22,74 @@ namespace StarWarsSpaceShipManager
         public Task syncronize()
         {
 
-            syncPlanets().Wait();
-            syncPilots();
-            return syncSpaceShips();
+            syncPlanets();
+            syncSpaceShips();
+            return syncPilots();  
         }
 
         private async Task syncPilots()
         {
+            List<viewmodels.PilotsViewModel> pilots = new List<viewmodels.PilotsViewModel>();
             System.Diagnostics.Debug.WriteLine("Iniciada a sincronização dos pilotos");
             HttpClient client = new HttpClient();
-            string response = await client.GetStringAsync(this.URL_PILOTOS);
+
+
+            while (URL_PILOTOS != null)
+            {
+                var responseHTTP = client.GetAsync(URL_PILOTOS).GetAwaiter().GetResult();
+                var response = responseHTTP.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                viewmodels.APIResults<viewmodels.PilotsViewModel> aPIResults = new viewmodels.APIResults<viewmodels.PilotsViewModel>();
+                aPIResults = JsonConvert.DeserializeObject<viewmodels.APIResults<viewmodels.PilotsViewModel>>(response);
+
+
+                //Faz uma verificação para que somente sejam adicionada as pessoas que pilotam naves (os pilotos)
+                foreach(var item in aPIResults.Results)
+                {
+                    if(item.Starships!=null)
+                    {
+                        pilots.Add(item);
+                    }
+                }
+               
+                
+                URL_PILOTOS = aPIResults.Next;
+                
+
+
+            }
+
+            
+            string[] columnNames = new string[2];
+            columnNames[0] = "IdPlaneta";
+            columnNames[1] = "Url";
+
+            //Consulta dados dos planetas para pegar o id do planeta de onde é o piloto
+            ConsultValues op = new ConsultValues("Planetas", columnNames);
+
+
+            int cou = 0;
+            //Foreach responsável por encontar id do planeta e preencher para colocar no objeto piloto
+            foreach(var p in pilots)
+            {
+                for(int i = 0; i < op.objectData.Count; i++)
+                {
+                    if (op.objectData[i][1] == p.Homeworld)
+                    {
+
+                        cou++;
+                        
+                        p.PlanetId = op.objectData[i][0];
+                        
+                    }
+                    
+                }
+            }
+
+
+            InsertPilots op1 = new InsertPilots(pilots);
+            System.Diagnostics.Debug.WriteLine(op1.getMessage());
+
 
         }
 

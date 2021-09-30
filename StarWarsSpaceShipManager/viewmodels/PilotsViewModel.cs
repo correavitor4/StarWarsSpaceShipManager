@@ -13,5 +13,8 @@ namespace StarWarsSpaceShipManager.viewmodels
         public string Url { get; set; }
 
         public List<int> ShipsId = new List<int>();
+
+        public string PlanetId { get; set; }
+
     }
 }

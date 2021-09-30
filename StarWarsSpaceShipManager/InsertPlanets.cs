@@ -19,7 +19,7 @@ namespace StarWarsSpaceShipManager
             {
                 cmd.Connection = conn.connect();
 
-                string textComando = "INSERT   INTO [dbo].[Planetas] ([Nome],[Rotacao],[Orbita],[Diametro],[Clima],[Populacao]) VALUES";
+                string textComando = "INSERT   INTO [dbo].[Planetas] ([Nome],[Rotacao],[Orbita],[Diametro],[Clima],[Populacao],[Url]) VALUES";
 
                 for (int i = 0; i < planets.Count; i++)
                 {
@@ -27,9 +27,9 @@ namespace StarWarsSpaceShipManager
 
                     
 
-                    textComando += string.Format("('{0}','{1}','{2}','{3}','{4}','{5}')",
+                    textComando += string.Format("('{0}','{1}','{2}','{3}','{4}','{5}','{6}')",
                         planets[i].Name, planets[i].Rotation_Period, planets[i].Orbital_Period,
-                        planets[i].Diameter, planets[i].Climate,planets[i].Population);
+                        planets[i].Diameter, planets[i].Climate,planets[i].Population,planets[i].Url);
                     
                     
                     //Apenas a formatação de separar os valores a serem inseridos por vírgula
