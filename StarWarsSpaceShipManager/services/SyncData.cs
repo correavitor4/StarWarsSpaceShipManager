@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
 
+
 namespace StarWarsSpaceShipManager
 {
     public class SyncData
     {
-        private const string URL_PLANETAS = "http://swapi.dev/api/planets/";
-        private const string URL_NAVES = "http://swapi.dev/api/starships/";
-        private const string URL_PILOTOS = "http://swapi.dev/api/people/";
+        private string URL_PLANETAS = "http://swapi.dev/api/planets/";
+        private string URL_NAVES = "http://swapi.dev/api/starships/";
+        private string URL_PILOTOS = "http://swapi.dev/api/people/";
 
         List<viewmodels.PlanetViewModel> planets = new List<viewmodels.PlanetViewModel>();
 
@@ -21,7 +22,7 @@ namespace StarWarsSpaceShipManager
         public Task syncronize()
         {
 
-            syncPlanets();
+            syncPlanets().Wait();
             syncPilots();
             return syncSpaceShips();
         }
@@ -30,7 +31,7 @@ namespace StarWarsSpaceShipManager
         {
             System.Diagnostics.Debug.WriteLine("Iniciada a sincronização dos pilotos");
             HttpClient client = new HttpClient();
-            string response = await client.GetStringAsync(URL_PILOTOS);
+            string response = await client.GetStringAsync(this.URL_PILOTOS);
 
         }
 
@@ -41,28 +42,54 @@ namespace StarWarsSpaceShipManager
             //Instância
             HttpClient client = new HttpClient();
 
-            //resposta do server
-            string response = await client.GetStringAsync(URL_PLANETAS);
-
+            System.Diagnostics.Debug.WriteLine(0);
+            while (URL_PLANETAS != null)
+            {
+                System.Diagnostics.Debug.WriteLine(1);
+                var responseHTTP =  client.GetAsync(URL_PLANETAS).GetAwaiter().GetResult();
+                System.Diagnostics.Debug.WriteLine(2);
+                string response = responseHTTP.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                viewmodels.APIResults<viewmodels.PlanetViewModel> r = new viewmodels.APIResults<viewmodels.PlanetViewModel>();
+                r = JsonConvert.DeserializeObject<viewmodels.APIResults<viewmodels.PlanetViewModel>>(response);
+                System.Diagnostics.Debug.WriteLine(3);
+                this.planets.AddRange(r.Results);
+                System.Diagnostics.Debug.WriteLine(4);
+                this.URL_PLANETAS = r.Next;
+            }
 
             //criar objeto APIResults
-            viewmodels.APIResults<viewmodels.PlanetViewModel> pns = new viewmodels.APIResults<viewmodels.PlanetViewModel>();
+            
 
             //Desserializa o JSON e o envia para esse lugar
-            pns = JsonConvert.DeserializeObject<viewmodels.APIResults<viewmodels.PlanetViewModel>>(response);
+            
 
 
             //Alguns planetas estavam com população "unknown", então mudei para 0, quando isso ocorre. Isto evita erros de inserção no banco de dados
-            for(int i = 0; i < pns.Results.Count; i++)
+            for(int i = 0; i < planets.Count; i++)
             {
-                if (pns.Results[i].Population == "unknown")
+                float r;
+                long inteiro;
+                if (!float.TryParse(planets[i].Rotation_Period,out r))
                 {
-                    pns.Results[i].Population = 0.ToString();
+                    planets[i].Rotation_Period = 0.ToString();
                 }
+                if (!float.TryParse(planets[i].Orbital_Period, out r))
+                {
+                    planets[i].Orbital_Period = 0.ToString();
+                }
+                if (!float.TryParse(planets[i].Diameter, out r))
+                {
+                    planets[i].Diameter = 0.ToString();
+                }
+                if (!long.TryParse(planets[i].Population, out inteiro) )
+                {
+                    planets[i].Population = 0.ToString();
+                }
+
             }
             
             //instancia a classe responsável por armazenar os dados no banco
-            InsertPlanets op = new InsertPlanets(pns);
+            InsertPlanets op = new InsertPlanets(planets);
 
 
             System.Diagnostics.Debug.WriteLine(op.getMessage());

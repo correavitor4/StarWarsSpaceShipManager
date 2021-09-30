@@ -11,7 +11,7 @@ namespace StarWarsSpaceShipManager
         SqlCommand cmd = new SqlCommand();
 
         private string message = "";
-        public InsertPlanets(viewmodels.APIResults<viewmodels.PlanetViewModel> planets)
+        public InsertPlanets(List<viewmodels.PlanetViewModel> planets)
         {
             
 
@@ -21,19 +21,19 @@ namespace StarWarsSpaceShipManager
 
                 string textComando = "INSERT   INTO [dbo].[Planetas] ([Nome],[Rotacao],[Orbita],[Diametro],[Clima],[Populacao]) VALUES";
 
-                for (int i = 0; i < planets.Results.Count; i++)
+                for (int i = 0; i < planets.Count; i++)
                 {
 
 
                     
 
                     textComando += string.Format("('{0}','{1}','{2}','{3}','{4}','{5}')",
-                        planets.Results[i].Name, planets.Results[i].Rotation_Period, planets.Results[i].Orbital_Period,
-                        planets.Results[i].Diameter, planets.Results[i].Climate,planets.Results[i].Population);
+                        planets[i].Name, planets[i].Rotation_Period, planets[i].Orbital_Period,
+                        planets[i].Diameter, planets[i].Climate,planets[i].Population);
                     
                     
                     //Apenas a formatação de separar os valores a serem inseridos por vírgula
-                    if (i != planets.Results.Count - 1)
+                    if (i != planets.Count - 1)
                     {
                         textComando += ",";
                     }
