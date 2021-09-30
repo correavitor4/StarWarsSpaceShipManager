@@ -10,7 +10,7 @@ namespace StarWarsSpaceShipManager
         ConnectionDB conn = new ConnectionDB();
         SqlCommand cmd = new SqlCommand();
         private string message = "";
-        public InsertSpaceShips(viewmodels.APIResults<viewmodels.SpaceShipViewModel> ships)
+        public InsertSpaceShips(List<viewmodels.SpaceShipViewModel> ships)
         {
             try
             {
@@ -18,12 +18,12 @@ namespace StarWarsSpaceShipManager
                 string textComando = "INSERT INTO [dbo].[Naves] " +
                     "([Nome],[Modelo],[Passageiros],[Carga],[Classe],[Url]) VALUES ";
 
-                for(int i = 0; i < ships.Results.Count; i++)
+                for(int i = 0; i < ships.Count; i++)
                 {
                     textComando += string.Format("('{0}','{1}','{2}','{3}','{4}','{5}')",
-                        ships.Results[i].Name, ships.Results[i].Model, ships.Results[i].Passengers, ships.Results[i].Cargo_Capacity, ships.Results[i].Starship_Class, ships.Results[i].Url);
+                        ships[i].Name, ships[i].Model, ships[i].Passengers, ships[i].Cargo_Capacity, ships[i].Starship_Class, ships[i].Url);
                 
-                    if(i != ships.Results.Count - 1)
+                    if(i != ships.Count - 1)
                     {
                         textComando += ",";
                     }
