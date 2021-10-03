@@ -15,8 +15,18 @@ namespace StarWarsSpaceShipManager
         private string URL_NAVES = "http://swapi.dev/api/starships/";
         private string URL_PILOTOS = "http://swapi.dev/api/people/";
 
-        
+        //Listas com objetos buscados na API. Resolvi colocálos fora das tasks para que o acesso aos dados seja facilitado
+        List<viewmodels.PilotsViewModel> pilots = new List<viewmodels.PilotsViewModel>();
+        List<viewmodels.PlanetViewModel> planets = new List<viewmodels.PlanetViewModel>();
+        List<viewmodels.SpaceShipViewModel> ships = new List<viewmodels.SpaceShipViewModel>();
 
+
+
+        /*Para preencher a tabela PILOTOS-NAVES
+            [0] = piloto
+            [1] = nave
+        */
+        List<string[]> pilotsShipsRelationship = new List<string[]>();
 
 
         public Task syncronize()
@@ -29,7 +39,7 @@ namespace StarWarsSpaceShipManager
 
         private async Task syncPilots()
         {
-            List<viewmodels.PilotsViewModel> pilots = new List<viewmodels.PilotsViewModel>();
+            
             System.Diagnostics.Debug.WriteLine("Iniciada a sincronização dos pilotos");
             HttpClient client = new HttpClient();
 
@@ -49,6 +59,19 @@ namespace StarWarsSpaceShipManager
                     if(item.Starships!=null)
                     {
                         pilots.Add(item);
+                        /*string[] cl = { "IdNave", "Url" };
+                        ConsultValues op2 = new ConsultValues("Naves", cl);
+                        foreach(var itUrl in op2.objectData[1])
+                        {
+                            foreach(var itSt in item.Starships)
+                            {
+                                if (itSt == itUrl)
+                                {
+                                    string[] fi = { i, itUrl };
+                                    this.pilotsShipsRelationship.Add({itSt,irUrl});
+                                }
+                            }
+                        }*/
                     }
                 }
                
@@ -96,7 +119,7 @@ namespace StarWarsSpaceShipManager
         private async Task syncPlanets()
         {
             System.Diagnostics.Debug.WriteLine("Iniciada a sincronização dos planetas");
-            List<viewmodels.PlanetViewModel> planets = new List<viewmodels.PlanetViewModel>();
+            
             //Instância
             HttpClient client = new HttpClient();
 
@@ -156,7 +179,7 @@ namespace StarWarsSpaceShipManager
 
         private async Task syncSpaceShips()
         {
-            List<viewmodels.SpaceShipViewModel> ships = new List<viewmodels.SpaceShipViewModel>();
+            
             System.Diagnostics.Debug.WriteLine("Iniciada a sincronização das naves");
             HttpClient client = new HttpClient();
 
@@ -205,5 +228,46 @@ namespace StarWarsSpaceShipManager
            
         }
         
+
+        public void syncDbAditionalData()
+        {
+            foreach(var pil in pilots)
+            {
+                foreach(var pilotStarships in pil.Starships)
+                {
+                    foreach(var ships in this.ships)
+                    {
+                        if (pilotStarships == ships.Url)
+                        {
+                            string[] pilConsultColumnNames = {"IdPiloto","Nome"};
+                            string[] ShipsConsultColumnNames = { "IdNave","Nome"};
+
+                            ConsultValues pilConsult = new ConsultValues("Pilotos", pilConsultColumnNames);
+                            ConsultValues shipsConsult = new ConsultValues("Naves", ShipsConsultColumnNames);
+
+                            for(int i = 0; i < pilConsult.objectData.Count; i++)
+                            {
+                                if(pilConsult.objectData[i][1] == pil.Name)
+                                {
+                                    for(int j = 0; j < shipsConsult.objectData.Count;j++)
+                                    {
+                                        if (shipsConsult.objectData[j][1] == ships.Name)
+                                        {
+                                            string[] im = { pilConsult.objectData[i][0], shipsConsult.objectData[j][0]};
+                                            this.pilotsShipsRelationship.Add(im);
+                                        }
+                                    }
+                                }
+                            }
+                            
+
+                        }
+                    }
+                }
+            }
+
+            InsertInShipsPilotsTable op =new InsertInShipsPilotsTable(this.pilotsShipsRelationship);
+            System.Diagnostics.Debug.WriteLine(op.getMessage());
+        }
     }
 }
