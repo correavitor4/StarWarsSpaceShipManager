@@ -36,6 +36,10 @@ namespace StarWarsSpaceShipManager
             sc.syncDbAditionalData();
             progressBar1.Value = 100;
 
+            FormViagens f = new FormViagens();
+            f.Show();
+            this.Hide();
+
         }
 
         private void label2_Click(object sender, EventArgs e)
