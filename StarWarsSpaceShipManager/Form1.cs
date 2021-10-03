@@ -26,7 +26,20 @@ namespace StarWarsSpaceShipManager
         private void button1_Click(object sender, EventArgs e)
         {
             SyncData sc = new SyncData();
-            sc.syncronize();
+            label2.Visible = true;
+            progressBar1.Visible = true;
+            progressBar1.Value = 25;
+            sc.syncronize().Wait();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
