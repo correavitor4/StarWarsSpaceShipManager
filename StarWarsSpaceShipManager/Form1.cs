@@ -25,6 +25,8 @@ namespace StarWarsSpaceShipManager
 
         private void button1_Click(object sender, EventArgs e)
         {
+            DeleteData del = new DeleteData();
+
             button1.Visible = false;
             label2.Visible = true;
             progressBar1.Visible = true;
