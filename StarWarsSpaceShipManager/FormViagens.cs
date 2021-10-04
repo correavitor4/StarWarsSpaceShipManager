@@ -86,5 +86,69 @@ namespace StarWarsSpaceShipManager
                 listView2.Items.Add(this.starShips.Name[i]);
             }
         }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)
+            {
+                textBox3.Text = listView1.SelectedItems[0].Text;
+            }
+        }
+
+        private void listView2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView2.SelectedItems.Count > 0)
+            {
+                textBox4.Text = listView2.SelectedItems[0].Text;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBox3.Text) || string.IsNullOrEmpty(textBox4.Text))
+            {
+                MessageBox.Show("Você deve selecionar um piloto e uma nave antes");
+            }
+            else
+            {
+
+                string pilotId = null;
+                string shipId = null;
+
+                //Os dois "for" abaixo são responsável por preencher as duas variáveis acima, para que sejam usadas na consulta do db
+                for (int i = 0; i < this.pilots.Name.Count; i++)
+                {
+                    if (this.pilots.Name[i] == textBox3.Text)
+                    {
+                        pilotId = this.pilots.Id[i];
+                    }
+                }
+                for (int i = 0; i < this.starShips.Name.Count; i++)
+                {
+                    if (this.starShips.Name[i] == textBox4.Text)
+                    {
+                        shipId = this.starShips.Id[i];
+                    }
+                }
+                
+                
+                SelectInPilotsShipsTable pilotsShips = new SelectInPilotsShipsTable(pilotId, shipId);
+                
+                
+                
+                if (pilotsShips.PilotsId.Count == 0)
+                {
+                    MessageBox.Show("Esse piloto não está autorizado a voar com essa nave");
+                }
+                else
+                {
+                    InsertStarShipTrip op = new InsertStarShipTrip(pilotId, shipId);
+                    System.Diagnostics.Debug.WriteLine(op.getMessage());
+
+                    MessageBox.Show("Nova viagem iniciada com sucesso");
+                }
+
+            }
+        }
     }
 }
